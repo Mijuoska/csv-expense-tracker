@@ -1,0 +1,70 @@
+h1 {
+    margin-left: 200px;
+}
+
+.input {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      width: 55%;
+}
+
+.panel {
+   height: 140px;
+   margin: 15px;
+   text-align: center;
+
+}
+
+.hide {
+    display: none;
+}
+
+#input-container {
+    margin-left: 200px;
+    clear: both;
+}
+
+#left {
+    padding: auto;
+    clear: both;
+}
+
+#panel-container {
+    width: 90%;
+}
+
+#dates {
+    width: 90%;
+}
+
+#data {
+    margin-top: 30px;
+}
+
+#income {
+    font-size: 2rem;
+    color: green;
+}
+
+#expenses {
+    font-size: 2rem;
+    color: red;
+}
+
+#difference {
+    font-size: 2rem;
+
+}
+
+#progress {
+    width: 60%;
+    background-color: grey;
+}
+
+#progress-bar {
+    width: 1%;
+    height: 20px;
+    background-color: green;
+}
+
+
