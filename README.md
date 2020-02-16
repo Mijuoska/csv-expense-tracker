@@ -1,11 +1,9 @@
 After creating a CSV to JSON converter (also found in this repository), I thought it might be cool to use the code in a more concrete
 project. That's how this project was born. You can upload a bank statement which at least where I'm from can easily be downloaded
 as a csv file from your online bank, and the app then converts the file to JSON behind the scenes and calculates income and expenses,
-as well as the difference between the two. To make this work, the app first asks you to map the csv headers correctly, although I've made some
-attempt to automate this. 
+as well as the difference between the two. To make this work, the app first asks you to map the csv headers correctly, although I've made some attempt to automate this. 
 
-The data is not stored in any database. Everything happens in the browser. The data is only momentarily stored in local storage 
-when the file is read but then immediately removed after the data has been processed. 
+The data is not stored in any database. Everything happens in the browser. 
 
 In the future I plan to add a feature to display and group the income and expenses by recipient.
 
