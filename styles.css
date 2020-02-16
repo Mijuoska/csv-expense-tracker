@@ -23,6 +23,15 @@ h1 {
     color: gold;
 }
 
+
+#start-date {
+    font-weight: bold;
+}
+
+#end-date {
+    font-weight: bold;
+}
+
 #input-container {
     margin-left: 200px;
     clear: both;
@@ -49,6 +58,8 @@ h1 {
     font-size: 2rem;
     color: green;
 }
+
+
 
 #expenses {
     font-size: 2rem;
