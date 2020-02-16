@@ -136,16 +136,18 @@ regexArr.forEach(function (regex) {
 
 
 function processData(sumkey, datekey, recipientkey, dateformat) {
+     clearValues()
     data = getData()
-    clearValues()
+    console.log(data)
      let converted = convertToNumbers(data, sumkey)
+     if (typeof converted[0][datekey] != 'object') {
      converted = convertDates(converted, datekey, dateformat)
+     }
      let sorted = sortByDate(converted, datekey)
      populateDates(sorted, datekey)
      let expenses = getExpenses(sorted, datekey, sumkey, recipientkey)
      let income = getIncome(sorted, datekey, sumkey, recipientkey)
      let difference = getDifference(expenses, income)
-     localStorage.removeItem('data')
      return [income, expenses, difference]
 }
 

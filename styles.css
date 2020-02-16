@@ -77,7 +77,8 @@ h1 {
 }
 
 #progress-bar {
-    width: 1%;
+    color: white;
+    width: 2%;
     height: 20px;
     background-color: green;
 }
