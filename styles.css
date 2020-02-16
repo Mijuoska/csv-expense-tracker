@@ -19,6 +19,10 @@ h1 {
     display: none;
 }
 
+.fa-coins {
+    color: gold;
+}
+
 #input-container {
     margin-left: 200px;
     clear: both;
