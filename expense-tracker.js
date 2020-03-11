@@ -58,8 +58,6 @@ incomeButton.addEventListener('click', function () {
     renderItems(dataArr[0][0], sumkey, datekey, recipientkey)
 });
 
-
-
 expensesButton.addEventListener('click', function () {
      let sumkey = document.getElementById('headers-map-sum').value
      let datekey = document.getElementById('headers-map-date').value
@@ -71,14 +69,26 @@ expensesButton.addEventListener('click', function () {
 
 
  let groupRecipientButton = document.getElementById('group-recipient-button');
- groupRecipientButton.addEventListener('click', function (e) {
+ groupRecipientButton.addEventListener('click', function () {
     let sumkey = document.getElementById('headers-map-sum').value
     let grouped = groupTransactionsByRecipient(dataArr[1][0], sumkey);
+    groupRecipientButton.classList.toggle('hide')
+    document.getElementById('ungroup-button').classList.toggle('hide')
     renderGroupedItemsTotal(grouped)
-
 
  });
 
+
+ let ungroupButton = document.getElementById('ungroup-button');
+ ungroupButton.addEventListener('click', function() {
+       let sumkey = document.getElementById('headers-map-sum').value
+       let datekey = document.getElementById('headers-map-date').value
+       let recipientkey = document.getElementById('headers-map-recipient').value
+       ungroupButton.classList.toggle('hide')
+       document.getElementById('group-recipient-button').classList.toggle('hide')
+       renderItems(dataArr[1][0], sumkey, datekey, recipientkey)
+
+ });
 
 function moveProgress() {
     let i = 0;

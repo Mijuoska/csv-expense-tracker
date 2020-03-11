@@ -26,6 +26,12 @@ h1 {
     color: gold;
 }
 
+.button {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+
 
 #start-date {
     font-weight: bold;
@@ -84,11 +90,6 @@ h1 {
     width: 2%;
     height: 20px;
     background-color: green;
-}
-
-#group-recipient-button {
-    margin-top: 20px;
-    margin-bottom: 20px;
 }
 
 
