@@ -1,17 +1,24 @@
 
 
 let dataArr;
+const outputFieldIDs = ['start-date', 'end-date', 'income', 'expenses', 'difference']
+
+function getInputFieldIDKeys() {
+    let keyObj = {} 
+    keyObj.sumkey = document.getElementById('headers-map-sum').value
+    keyObj.datekey = document.getElementById('headers-map-date').value
+    keyObj.recipientkey = document.getElementById('headers-map-recipient').value
+    keyObj.dateformat = document.getElementById('date-format').value;
+    return keyObj
+}
 
 let processDataButton = document.getElementById('process-data')
     processDataButton.addEventListener('click', function () {
-            let sumkey = document.getElementById('headers-map-sum').value
-            let datekey = document.getElementById('headers-map-date').value
-            let recipientkey = document.getElementById('headers-map-recipient').value
-            let dateformat = document.getElementById('date-format').value;
-            dataArr = processData(sumkey, datekey, recipientkey, dateformat);
-            document.getElementById('income').innerText = "+" + dataArr[0][1];
-            document.getElementById('expenses').innerText = dataArr[1][1];
-            document.getElementById('difference').innerText = dataArr[2];
+            keys = getInputFieldIDKeys()
+            output = processData(keys.sumkey, keys.datekey, keys.recipientkey, keys.dateformat);
+            document.getElementById('income').innerText = "+" + output.income.total;
+            document.getElementById('expenses').innerText = output.expenses.total;
+            document.getElementById('difference').innerText = output.difference;
            
     });
 
@@ -25,12 +32,12 @@ let processDataButton = document.getElementById('process-data')
         }
     }
 
-    function clearValues() {
-        document.getElementById('start-date').innerText = ""
-        document.getElementById('end-date').innerText = ""
-        document.getElementById('income').innerText = ""
-        document.getElementById('expenses').innerText = ""
-        document.getElementById('difference').innerText = "";
+
+
+    function clearValues(fieldIDs) {
+        fieldIDs.forEach(function (ID) {
+             document.getElementById(ID).innerText = ""
+        })
     }
 
 
@@ -52,17 +59,13 @@ incomeButton = document.getElementById('income')
 expensesButton = document.getElementById('expenses')
 
 incomeButton.addEventListener('click', function () {
-    let sumkey = document.getElementById('headers-map-sum').value
-    let datekey = document.getElementById('headers-map-date').value
-    let recipientkey = document.getElementById('headers-map-recipient').value
-    renderItems(dataArr[0][0], sumkey, datekey, recipientkey)
+    let keys = getInputFieldIDKeys()
+    renderItems(output.income.entries, keys.sumkey, keys.datekey, keys.recipientkey)
 });
 
 expensesButton.addEventListener('click', function () {
-     let sumkey = document.getElementById('headers-map-sum').value
-     let datekey = document.getElementById('headers-map-date').value
-     let recipientkey = document.getElementById('headers-map-recipient').value
-     renderItems(dataArr[1][0], sumkey, datekey, recipientkey)
+    let keys = getInputFieldIDKeys()
+     renderItems(output.expenses.entries, keys.sumkey, keys.datekey, keys.recipientkey)
     
     });
 
@@ -70,8 +73,9 @@ expensesButton.addEventListener('click', function () {
 
  let groupRecipientButton = document.getElementById('group-recipient-button');
  groupRecipientButton.addEventListener('click', function () {
-    let sumkey = document.getElementById('headers-map-sum').value
-    let grouped = groupTransactionsByRecipient(dataArr[1][0], sumkey);
+    let keys = getInputFieldIDKeys()
+    let recipients = cleanRecipients(output.expenses.entries, keys.recipientkey)
+    let grouped = groupTransactionsByRecipient(recipients, keys.sumkey, keys.recipientkey);
     groupRecipientButton.classList.toggle('hide')
     document.getElementById('ungroup-button').classList.toggle('hide')
     renderGroupedItemsTotal(grouped)
@@ -81,12 +85,10 @@ expensesButton.addEventListener('click', function () {
 
  let ungroupButton = document.getElementById('ungroup-button');
  ungroupButton.addEventListener('click', function() {
-       let sumkey = document.getElementById('headers-map-sum').value
-       let datekey = document.getElementById('headers-map-date').value
-       let recipientkey = document.getElementById('headers-map-recipient').value
+       let keys = getInputFieldIDKeys()
        ungroupButton.classList.toggle('hide')
        document.getElementById('group-recipient-button').classList.toggle('hide')
-       renderItems(dataArr[1][0], sumkey, datekey, recipientkey)
+       renderItems(output.expenses.entries, keys.sumkey, keys.datekey, keys.recipientkey)
 
  });
 
@@ -178,19 +180,20 @@ regexArr.forEach(function (regex) {
 
 
 function processData(sumkey, datekey, recipientkey, dateformat) {
-     clearValues()
-    data = getData()
+    const output = {}
+     clearValues(outputFieldIDs)
+     data = getData()
      let converted = convertToNumbers(data, sumkey)
      if (typeof converted[0][datekey] != 'object') {
      converted = convertDates(converted, datekey, dateformat)
      }
      let sorted = sortByDate(converted, datekey)
      populateDates(sorted, datekey)
-     let expenses = getExpenses(sorted, datekey, sumkey, recipientkey)
-     let income = getIncome(sorted, datekey, sumkey, recipientkey)
-     let difference = getDifference(expenses, income)
-    renderItems(income[0], sumkey, datekey, recipientkey)
-     return [income, expenses, difference] // income and expenses are arrays
+     output.expenses = getExpenses(sorted, sumkey)
+     output.income = getIncome(sorted, sumkey)
+     output.difference = getDifference(output.expenses, output.income)
+    renderItems(output.income.entries, sumkey, datekey, recipientkey)
+     return output 
 }
 
 
@@ -212,9 +215,6 @@ function convertToNumbers(bankStatement, sumkey) {
 
 
 function convertDates(bankStatement, datekey, format) {
-    console.log("Inside convert dates bankStatement: " + bankStatement[0][datekey])
-    console.log("inside convert dates datekey: " + datekey)
-    console.log(format)
     // if format is mm.dd.yyyy, dd/mm/yyyy, dd.mm.yyyy, we have to convert
     for (let i = 0; i < bankStatement.length; i++) {
         let temp
@@ -259,39 +259,43 @@ function sortByDate(bankStatement, datekey) {
 }
 
 
-function getExpenses(bankStatement, datekey, sumkey, recipientkey) {
-    let total = 0;
-    let expenses = []
+function getExpenses(bankStatement, sumkey) {
+    let output = {}
+    output.total = 0;
+    output.entries = []
     for (let i = 0; i < bankStatement.length; i++) {
         if (bankStatement[i][sumkey] < 0) {
         // create new expenses array
-        expenses.push(bankStatement[i])        
+        output.entries.push(bankStatement[i])        
         // sum up total
-        total += bankStatement[i][sumkey];
+        output.total += bankStatement[i][sumkey];
         }
     }
-    return [expenses, Math.round(total)]
+    output.total = Math.round(output.total)
+
+    return output
 }
 
-function getIncome(bankStatement, datekey, sumkey, recipientkey) {
-   let total = 0;
-   let income = []
+function getIncome(bankStatement, sumkey) {
+   let output = {}
+   output.total = 0;
+   output.entries = []
    for (var i = 0; i < bankStatement.length; i++) {
         if (bankStatement[i][sumkey] > 0) {
             // create new income array
-            income.push(bankStatement[i])
+            output.entries.push(bankStatement[i])
            // sum up total
-           total += bankStatement[i][sumkey];
+           output.total += bankStatement[i][sumkey];
        }
    }
-
-   return [income, Math.round(total)]
+    output.total = Math.round(output.total)
+   return output
    }
 
 
 
-function getDifference(expensesArr, incomeArr) {
-    let difference = incomeArr[1] + expensesArr[1];
+function getDifference(expenses, income) {
+    let difference = income.total + expenses.total;
     return Math.round(difference)
 }
 
@@ -305,16 +309,21 @@ function renderItems(bankStatement, sumkey, datekey, recipientkey) {
     }
 }
 
-function groupTransactionsByRecipient(data, sumkey) {
-    recipients = []
+
+// Cleans up recipient names so that they can more easily be grouped
+function cleanRecipients(data, recipientkey) {
+  recipients = []
     let regex = /\b[a-zA-Z]*\s[a-zA-Z]*|\b[a-zA-Z]*/
-    // Parse and clean up recipient names for grouping
     data.forEach(function (item) {
-        let match = regex.exec(item['Saajan nimi'].toLowerCase())[0].trim();
-        item['Saajan nimi'] = match;
+        let match = regex.exec(item[recipientkey].toLowerCase())[0].trim();
+        item[recipientkey] = match;
         if (recipients.indexOf(match) < 0)
             recipients.push(match)
     });
+    return recipients
+}
+
+function groupTransactionsByRecipient(recipients, sumkey, recipientkey) {
     // Create an array where we store the grouped transactions
     let groupedTransactions = []
     recipients.forEach(function (rec) {
@@ -327,7 +336,7 @@ function groupTransactionsByRecipient(data, sumkey) {
     // Do the actual sorting
     for (let i = 0; i < data.length; i++) {
         for (let y = 0; y < groupedTransactions.length; y++) {
-            if (data[i]['Saajan nimi'] == groupedTransactions[y]['Recipient'])
+            if (data[i][recipientkey] == groupedTransactions[y]['Recipient'])
                 groupedTransactions[y]['Transactions'].push(data[i])
         }
     }
