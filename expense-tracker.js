@@ -19,6 +19,16 @@ let processDataButton = document.getElementById('process-data')
             document.getElementById('income').innerText = "+" + output.income.total;
             document.getElementById('expenses').innerText = output.expenses.total;
             document.getElementById('difference').innerText = output.difference;
+
+            // abstract the below into a function
+            var ungroup = document.getElementById('ungroup-button')
+            var group = document.getElementById('group-recipient-button')
+            if (!ungroup.classList.contains('hide')) {
+                ungroup.classList.toggle('hide')
+                 group.classList.toggle('hide')
+             }
+
+
            
     });
 
@@ -193,7 +203,7 @@ function processData(sumkey, datekey, recipientkey, dateformat) {
      output.income = getIncome(sorted, sumkey)
      output.difference = getDifference(output.expenses, output.income)
     renderItems(output.income.entries, sumkey, datekey, recipientkey)
-     return output 
+    return output 
 }
 
 
