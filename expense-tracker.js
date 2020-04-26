@@ -53,7 +53,7 @@ let processDataButton = document.getElementById('process-data')
 
  let uploadCSVFile = document.getElementById('csv-file')
  uploadCSVFile.addEventListener('change', function (e) {
-     readFile(e.target.files[0]) 
+     let result = readFile(e.target.files[0]) 
      moveProgress()
      setTimeout(function () {
          headerMapper(data, 'headers-map-sum')
