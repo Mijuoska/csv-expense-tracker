@@ -1,0 +1,22 @@
+{
+  "name": "csv-expense-tracker",
+  "version": "1.0.0",
+  "description": "An app that allows you to upload your bank statements as CSV files and analyze your income and expenses.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mijuoska/csv-expense-tracker.git"
+  },
+  "author": "M.K.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mijuoska/csv-expense-tracker/issues"
+  },
+  "homepage": "https://github.com/Mijuoska/csv-expense-tracker#readme",
+  "devDependencies": {
+    "eslint": "^7.5.0"
+  }
+}
