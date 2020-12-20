@@ -1,5 +1,5 @@
 let output
-let data = getData()
+let data 
 
 let uploadCSVFile = document.getElementById('csv-file')
 uploadCSVFile.addEventListener('change', function (event) {
@@ -8,6 +8,7 @@ uploadCSVFile.addEventListener('change', function (event) {
 	reader.onload = function (event) {
 		  data = convertCSV(event.target.result)
 		if (data) {
+			// Saving data to local storage so that it doesn't have to be read from a file every time
 			localStorage.setItem('data', JSON.stringify(data))
 		} else {
 			alert('Something went wrong with converting the file')
@@ -36,10 +37,12 @@ processDataButton.addEventListener('click', function () {
 		recipientkey,
 		dateformat
 	} = getInputFieldIDKeys()
+
 	const outputFieldIDs = ['start-date', 'end-date', 'income', 'expenses', 'difference']
 	outputFieldIDs.forEach(function (ID) {
 		document.getElementById(ID).innerText = ''
 	})
+	data = getData()
 	output = main(data, datekey, sumkey, dateformat)
 	renderItems(output.expenses.entries, sumkey, datekey, recipientkey)
 	document.getElementById('income').innerText = '+' + output.income.total
@@ -73,6 +76,7 @@ expensesButton.addEventListener('click', function () {
 let groupRecipientButton = document.getElementById('group-recipient-button')
 groupRecipientButton.addEventListener('click', function () {
 	const { sumkey, recipientkey, datekey, dateformat } = getInputFieldIDKeys()	
+	data = getData()
 	output = main(data, datekey, sumkey, dateformat)
 	let recipients = cleanRecipients(output.expenses.entries, recipientkey)
 	let grouped = groupTransactionsByRecipient(recipients, sumkey, recipientkey)	
@@ -88,7 +92,8 @@ ungroupButton.addEventListener('click', function () {
 	const { sumkey, datekey, recipientkey, dateformat } = getInputFieldIDKeys()
 	ungroupButton.classList.toggle('hide')
 	document.getElementById('group-recipient-button').classList.toggle('hide')
-	const output = main(data, datekey, sumkey, dateformat)
+	data = getData()
+	output = main(data, datekey, sumkey, dateformat)
 	renderItems(output.expenses.entries, sumkey, datekey, recipientkey)
 })
 
