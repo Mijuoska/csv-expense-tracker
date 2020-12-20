@@ -7,26 +7,26 @@ uploadCSVFile.addEventListener('change', function (event) {
 	if (reader != undefined) {
 	reader.onload = function (event) {
 		  data = convertCSV(event.target.result)
-		if (data) {
-			// Saving data to local storage so that it doesn't have to be read from a file every time
-			localStorage.setItem('data', JSON.stringify(data))
+		if (!data) {
+		   // do nothing
 		} else {
-			alert('Something went wrong with converting the file')
-		}
-		}
-	} else {
-		alert('Something went wrong with reading the file')
-	}
-	
-	moveProgress()
-	setTimeout(function () {
-		headerMapper(data, 'headers-map-sum')
-		headerMapper(data, 'headers-map-date')
-		headerMapper(data, 'headers-map-recipient')
-		document.getElementById('field-maps').classList.remove('hide')
-	}, 3000)
+		// Saving data to local storage so that it doesn't have to be read from a file every time
+			localStorage.setItem('data', JSON.stringify(data))
+			moveProgress()
+			setTimeout(function () {
+			headerMapper(data, 'headers-map-sum')
+			headerMapper(data, 'headers-map-date')
+			headerMapper(data, 'headers-map-recipient')
+			document.getElementById('field-maps').classList.remove('hide')
+			}, 3000)
 
+		}
+	
+	}
+}
 })
+	
+	
 
 
 let processDataButton = document.getElementById('process-data')

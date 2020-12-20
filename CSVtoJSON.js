@@ -53,9 +53,9 @@ function createJSOBject(csvArr) {
 function convertCSV(input) {
 	const delimiter = document.getElementById('delimiter').value
 	const csvArr = createCSVArray(input, delimiter)
-	const data = createJSOBject(csvArr)
-	if (data) {   
-		return data
+	const result = createJSOBject(csvArr)
+	if (result) {   
+		return result
 	} else {
 		return 
 	}
