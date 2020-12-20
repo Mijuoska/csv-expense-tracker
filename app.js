@@ -1,3 +1,5 @@
+let output = {}
+
 let uploadCSVFile = document.getElementById('csv-file')
 uploadCSVFile.addEventListener('change', function (e) {
 	readFile(e.target.files[0])
@@ -24,7 +26,7 @@ processDataButton.addEventListener('click', function () {
 	outputFieldIDs.forEach(function (ID) {
 		document.getElementById(ID).innerText = ''
 	})
-	const output = main(datekey, sumkey, dateformat)
+	output = main(datekey, sumkey, dateformat)
 	renderItems(output.income.entries, sumkey, datekey, recipientkey)
 	document.getElementById('income').innerText = '+' + output.income.total
 	document.getElementById('expenses').innerText = output.expenses.total
@@ -57,7 +59,6 @@ expensesButton.addEventListener('click', function () {
 let groupRecipientButton = document.getElementById('group-recipient-button')
 groupRecipientButton.addEventListener('click', function () {
 	const { sumkey, recipientkey, datekey, dateformat } = getInputFieldIDKeys()
-	const output = main(datekey, sumkey, dateformat)
 	let recipients = cleanRecipients(output.expenses.entries, recipientkey)
 	let grouped = groupTransactionsByRecipient(recipients, sumkey, recipientkey)
 	groupRecipientButton.classList.toggle('hide')
