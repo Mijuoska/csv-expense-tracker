@@ -1,4 +1,3 @@
-
 function createCSVArray(input, separator) {
 	const regexMap = {
 		'comma': /,/g,

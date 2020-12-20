@@ -1,12 +1,10 @@
-
-function main(datekey, sumkey, dateformat) {
+function main(data, datekey, sumkey, dateformat) {
 const output = {}
-data = getData()
 let converted = convertToNumbers(data, sumkey)
 if (typeof converted[0][datekey] != 'object') {
 	converted = convertDates(converted, datekey, dateformat)
 }
-let sorted = sortByDate(converted, datekey)
+const sorted = sortByDate(converted, datekey)
 populateDates(sorted, datekey)
 output.expenses = getExpenses(sorted, sumkey)
 output.income = getIncome(sorted, sumkey)
@@ -22,24 +20,15 @@ function readFile(file) {
 	if (extension != 'csv') {
 		alert('Please upload only csv files')
 		document.getElementById('csv-file').value = ''
-		return false
+		return
 	}
-	reader.onload = function (event) {
-		data = convertCSV(event.target.result)
-		if (data) {
-			localStorage.setItem('data', JSON.stringify(data))
-			return true
-		} else {
-			return false
-		}
-
+	else {
+		return reader
 	}
 }
 
-
-
 function getData() {
-	data = localStorage.getItem('data')
+	const data = localStorage.getItem('data')
 	try {
 		return data ? JSON.parse(data) : []
 	} catch (e) {
@@ -317,4 +306,5 @@ function moveProgress() {
 		}
 	}
 }
+
 
