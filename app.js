@@ -1,5 +1,3 @@
-const output = {}
-
 let uploadCSVFile = document.getElementById('csv-file')
 uploadCSVFile.addEventListener('change', function (e) {
 	readFile(e.target.files[0])
@@ -26,16 +24,7 @@ processDataButton.addEventListener('click', function () {
 	outputFieldIDs.forEach(function (ID) {
 		document.getElementById(ID).innerText = ''
 	})
-	data = getData()
-	let converted = convertToNumbers(data, sumkey)
-	if (typeof converted[0][datekey] != 'object') {
-		converted = convertDates(converted, datekey, dateformat)
-	}
-	let sorted = sortByDate(converted, datekey)
-	populateDates(sorted, datekey)
-	output.expenses = getExpenses(sorted, sumkey)
-	output.income = getIncome(sorted, sumkey)
-	output.difference = getDifference(output.expenses, output.income)
+	const output = main(datekey, sumkey, dateformat)
 	renderItems(output.income.entries, sumkey, datekey, recipientkey)
 	document.getElementById('income').innerText = '+' + output.income.total
 	document.getElementById('expenses').innerText = output.expenses.total
@@ -50,7 +39,7 @@ processDataButton.addEventListener('click', function () {
 
 })
 
-incomeButton = document.getElementById('income')
+let incomeButton = document.getElementById('income')
 incomeButton.addEventListener('click', function () {
 	let keys = getInputFieldIDKeys()
 	renderItems(output.income.entries, keys.sumkey, keys.datekey, keys.recipientkey)
@@ -67,7 +56,8 @@ expensesButton.addEventListener('click', function () {
 
 let groupRecipientButton = document.getElementById('group-recipient-button')
 groupRecipientButton.addEventListener('click', function () {
-	const { sumkey, recipientkey } = getInputFieldIDKeys()
+	const { sumkey, recipientkey, datekey, dateformat } = getInputFieldIDKeys()
+	const output = main(datekey, sumkey, dateformat)
 	let recipients = cleanRecipients(output.expenses.entries, recipientkey)
 	let grouped = groupTransactionsByRecipient(recipients, sumkey, recipientkey)
 	groupRecipientButton.classList.toggle('hide')
@@ -79,9 +69,10 @@ groupRecipientButton.addEventListener('click', function () {
 
 let ungroupButton = document.getElementById('ungroup-button')
 ungroupButton.addEventListener('click', function () {
-	const { sumkey, datekey, recipientkey } = getInputFieldIDKeys()
+	const { sumkey, datekey, recipientkey, dateformat } = getInputFieldIDKeys()
 	ungroupButton.classList.toggle('hide')
 	document.getElementById('group-recipient-button').classList.toggle('hide')
+	const output = main(datekey, sumkey, dateformat)
 	renderItems(output.expenses.entries, sumkey, datekey, recipientkey)
 })
 

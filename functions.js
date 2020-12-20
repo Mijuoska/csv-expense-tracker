@@ -1,3 +1,20 @@
+
+function main(datekey, sumkey, dateformat) {
+const output = {}
+data = getData()
+let converted = convertToNumbers(data, sumkey)
+if (typeof converted[0][datekey] != 'object') {
+	converted = convertDates(converted, datekey, dateformat)
+}
+let sorted = sortByDate(converted, datekey)
+populateDates(sorted, datekey)
+output.expenses = getExpenses(sorted, sumkey)
+output.income = getIncome(sorted, sumkey)
+output.difference = getDifference(output.expenses, output.income)
+return output
+}
+
+
 function readFile(file) {
 	const reader = new FileReader()
 	reader.readAsText(file)
