@@ -27,7 +27,7 @@ processDataButton.addEventListener('click', function () {
 		document.getElementById(ID).innerText = ''
 	})
 	output = main(datekey, sumkey, dateformat)
-	renderItems(output.income.entries, sumkey, datekey, recipientkey)
+	renderItems(output.expenses.entries, sumkey, datekey, recipientkey)
 	document.getElementById('income').innerText = '+' + output.income.total
 	document.getElementById('expenses').innerText = output.expenses.total
 	document.getElementById('difference').innerText = output.difference
@@ -59,6 +59,7 @@ expensesButton.addEventListener('click', function () {
 let groupRecipientButton = document.getElementById('group-recipient-button')
 groupRecipientButton.addEventListener('click', function () {
 	const { sumkey, recipientkey, datekey, dateformat } = getInputFieldIDKeys()
+	output = main(datekey, sumkey, dateformat)
 	let recipients = cleanRecipients(output.expenses.entries, recipientkey)
 	let grouped = groupTransactionsByRecipient(recipients, sumkey, recipientkey)
 	groupRecipientButton.classList.toggle('hide')
